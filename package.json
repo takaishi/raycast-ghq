@@ -17,7 +17,8 @@
   "dependencies": {
     "@raycast/api": "^1.39.2",
     "@raycast/utils": "^1.3.2",
-    "shelljs": "^0.8.5"
+    "shelljs": "^0.8.5",
+    "untildify": "^4.0.0"
   },
   "devDependencies": {
     "@types/shelljs": "^0.8.11",
@@ -37,12 +38,21 @@
   },
   "preferences": [
     {
-      "required": true,
+      "required": false,
       "name": "path",
       "title": "PATH",
       "type": "textfield",
       "description": "PATH",
       "placeholder": "/path/to/bin"
+    },
+    {
+      "required": false,
+      "name": "configPath",
+      "title": "Config Path",
+      "type": "textfield",
+      "description": "Config file path",
+      "placeholder": "/path/to/config.json",
+      "default": "~/.raycast_ghq.json"
     }
   ]
 }

@@ -1,9 +1,14 @@
-import { exec } from "child_process";
+import { exec, execSync } from "child_process";
 import { ActionPanel, List, Action, closeMainWindow, getPreferenceValues } from "@raycast/api";
 import { useExec } from "@raycast/utils";
+import * as fs from "fs";
+import * as path from "path";
+const untildify = require('untildify');
+
 
 interface Preferences {
     path: string;
+    configPath: string;
 }
 
 function OpenWith(app: string, repo: string) {
@@ -21,7 +26,7 @@ type App = {
     name: string
     executable: string
 }
-const apps = [
+const defaultApps = [
     {name: "Finder", executable: "open"},
     {name: "Goland",   executable: "goland"},
     {name: "RubyMine", executable: "rubymine"},
@@ -30,8 +35,9 @@ const apps = [
 
 export default function Command() {
     const preferences = getPreferenceValues<Preferences>();
-    console.log(preferences)
     process.env.PATH = `/opt/homebrew/bin/:/usr/bin/:/usr/local/bin/:` + preferences.path
+    const s = fs.readFileSync(untildify(preferences.configPath))
+    const apps = defaultApps.concat(JSON.parse(s).apps)
 
     const { isLoading, data, revalidate } = useExec("ghq", ["list"], {});
     const results = data?.split("\n") || []
