@@ -34,5 +34,15 @@
     "fix-lint": "ray lint --fix",
     "lint": "ray lint",
     "publish": "ray publish"
-  }
+  },
+  "preferences": [
+    {
+      "required": true,
+      "name": "path",
+      "title": "PATH",
+      "type": "textfield",
+      "description": "PATH",
+      "placeholder": "/path/to/bin"
+    }
+  ]
 }

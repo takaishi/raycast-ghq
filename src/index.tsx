@@ -1,7 +1,10 @@
-import { useMemo } from "react";
 import { exec } from "child_process";
-import { ActionPanel, List, Action, closeMainWindow } from "@raycast/api";
+import { ActionPanel, List, Action, closeMainWindow, getPreferenceValues } from "@raycast/api";
 import { useExec } from "@raycast/utils";
+
+interface Preferences {
+    path: string;
+}
 
 function OpenWith(app: string, repo: string) {
     exec(`${app} ~/src/${repo}`, (error, stdout, stderr) => {
@@ -12,7 +15,6 @@ function OpenWith(app: string, repo: string) {
         console.log(`stdout: ${stdout}`);
         console.error(`stderr: ${stderr}`);
     });
-    closeMainWindow();
 }
 
 type App = {
@@ -27,9 +29,11 @@ const apps = [
 ]
 
 export default function Command() {
-    process.env.PATH = "/opt/homebrew/bin/:/Users/ryotakaishi/bin/:/usr/bin/:/Users/ryotakaishi/bin/"
+    const preferences = getPreferenceValues<Preferences>();
+    console.log(preferences)
+    process.env.PATH = `/opt/homebrew/bin/:/usr/bin/:/usr/local/bin/:` + preferences.path
 
-    const { isLoading, data, revalidate } = useExec("/opt/homebrew/bin/ghq", ["list"], {});
+    const { isLoading, data, revalidate } = useExec("ghq", ["list"], {});
     const results = data?.split("\n") || []
 
     return (
@@ -48,6 +52,7 @@ export default function Command() {
                                         return (
                                             <Action title={title} onAction={() => {
                                                 OpenWith(app.executable, repo)
+                                                closeMainWindow();
                                             }}
                                             />
                                         )
